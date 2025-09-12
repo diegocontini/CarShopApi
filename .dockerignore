@@ -1,0 +1,45 @@
+# Ignore git files
+.git
+.gitignore
+README.md
+
+# Ignore Docker files
+Dockerfile*
+docker-compose*
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore build output
+**/bin/
+**/obj/
+**/out/
+
+# Ignore test results
+TestResults/
+
+# Ignore packages
+**/packages/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.cache
+*.docstates
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Ignore node modules (if any)
+node_modules/
+npm-debug.log*
