@@ -3365,11 +3365,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/diego/dev/projects/utfpr/carshop/api/CarShopApi/CarShopApi.csproj",
+      "projectUniqueName": "/Users/diego/dev/projects/utfpr/carshop/CarShopApi/CarShopApi.csproj",
       "projectName": "CarShopApi",
-      "projectPath": "/Users/diego/dev/projects/utfpr/carshop/api/CarShopApi/CarShopApi.csproj",
+      "projectPath": "/Users/diego/dev/projects/utfpr/carshop/CarShopApi/CarShopApi.csproj",
       "packagesPath": "/Users/diego/.nuget/packages/",
-      "outputPath": "/Users/diego/dev/projects/utfpr/carshop/api/CarShopApi/obj/",
+      "outputPath": "/Users/diego/dev/projects/utfpr/carshop/CarShopApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/diego/.nuget/NuGet/NuGet.Config"

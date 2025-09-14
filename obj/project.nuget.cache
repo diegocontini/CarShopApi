@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HNIQsQsbnDI=",
+  "dgSpecHash": "0zHclhXimk0=",
   "success": true,
-  "projectFilePath": "/Users/diego/dev/projects/utfpr/carshop/api/CarShopApi/CarShopApi.csproj",
+  "projectFilePath": "/Users/diego/dev/projects/utfpr/carshop/CarShopApi/CarShopApi.csproj",
   "expectedPackageFiles": [
     "/Users/diego/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/diego/.nuget/packages/microsoft.aspnetcore.openapi/8.0.19/microsoft.aspnetcore.openapi.8.0.19.nupkg.sha512",
