@@ -1,7 +1,8 @@
-using CarShopApi;
 using Microsoft.EntityFrameworkCore;
 
-public class CarEndpoints
+namespace CarShopApi.Endpoints;
+
+public static class CarEndpoints
 {
     public static void Map(WebApplication app)
     {
