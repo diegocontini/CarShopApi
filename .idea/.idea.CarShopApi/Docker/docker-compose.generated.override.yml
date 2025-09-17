@@ -1,0 +1,34 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  api:
+    build:
+      context: "/Users/diego/dev/projects/utfpr/carshop/CarShopApi"
+      dockerfile: "Dockerfile"
+      target: "build"
+      args:
+        BUILD_CONFIGURATION: "Debug"
+    command: []
+    entrypoint:
+    - "/opt/JetBrains/RiderDebuggerTools/linux-arm64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/JetBrains/RiderDebuggerTools/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57000"
+    - "--backend-port=57200"
+    - "--roslyn-worker-port=57402"
+    - "--timeout=60"
+    environment:
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/JetBrains/RiderDebuggerTools"
+      RESHARPER_LOG_CONF: "/etc/opt/JetBrains/RiderDebuggerTools/backend-log.xml"
+    image: "carshopapi:dev"
+    ports:
+    - "127.0.0.1:57002:57000"
+    - "127.0.0.1:57202:57200"
+    - "127.0.0.1:57402:57402"
+    volumes:
+    - "/Users/diego/dev/projects/utfpr/carshop/CarShopApi:/app:rw"
+    - "/Users/diego/dev/projects/utfpr/carshop/CarShopApi:/src:rw"
+    - "/Users/diego/.nuget/packages:/root/.nuget/packages"
+    - "/Users/diego/.local/share/JetBrains/RiderRemoteDebugger/2025.2.1/LinuxArm64:/opt/JetBrains/RiderDebuggerTools"
+    - "/Users/diego/Library/Logs/JetBrains/Rider2025.2/DebuggerWorker/JetBrains.Debugger.Worker.2025_9_16_21_24_28:/var/opt/JetBrains/RiderDebuggerTools:rw"
+    working_dir: "/app"
