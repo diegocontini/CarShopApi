@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarShopApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251102141026_InitialMigration")]
+    [Migration("20251102191531_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -74,12 +74,12 @@ namespace CarShopApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Base64")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<long>("CarId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -170,6 +170,38 @@ namespace CarShopApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("CarShopApi.Models.VendorComission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("ComissionAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ComissionPercentage")
+                        .HasColumnType("numeric");
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("OrderTotal")
+                        .HasColumnType("numeric");
+
+                    b.Property<long>("VendorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("VendorName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("vendor_comissions", (string)null);
                 });
 
             modelBuilder.Entity("CarShopApi.Models.CarImage", b =>

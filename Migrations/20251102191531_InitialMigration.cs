@@ -66,12 +66,30 @@ namespace CarShopApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "vendor_comissions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    VendorId = table.Column<long>(type: "bigint", nullable: false),
+                    VendorName = table.Column<string>(type: "text", nullable: false),
+                    ComissionPercentage = table.Column<decimal>(type: "numeric", nullable: false),
+                    ComissionAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderTotal = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_vendor_comissions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "car_images",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Base64 = table.Column<string>(type: "text", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false),
                     CarId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -129,6 +147,9 @@ namespace CarShopApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "vendor_comissions");
 
             migrationBuilder.DropTable(
                 name: "cars");

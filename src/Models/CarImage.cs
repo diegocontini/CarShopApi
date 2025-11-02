@@ -4,7 +4,7 @@ public class CarImage
 {
     public long Id { get; set; }
 
-    public string Base64 { get; set; }
+    public string Url { get; set; }
 
     public long CarId { get; set; }
 

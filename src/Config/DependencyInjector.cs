@@ -24,5 +24,6 @@ public class DependencyInjector
         services.AddScoped<UserService>();
         services.AddScoped<CarService>();   
         services.AddScoped<OrderService>();
+        services.AddScoped<ComissionService>();
     }
 }

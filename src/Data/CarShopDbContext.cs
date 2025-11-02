@@ -14,6 +14,7 @@ namespace CarShopApi
         public DbSet<User> Users => Set<User>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+        public DbSet<VendorComission> VendorComissions => Set<VendorComission>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
