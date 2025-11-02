@@ -2,11 +2,11 @@ namespace CarShopApi.Models;
 
 public class CarImage
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public string Path { get; set; }
+    public string Base64 { get; set; }
 
-    public int CarId { get; set; }
+    public long CarId { get; set; }
 
     public Car Car { get; set; }
 }

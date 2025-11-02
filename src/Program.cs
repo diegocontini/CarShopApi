@@ -1,25 +1,25 @@
+using System.Text.Json.Serialization;
 using CarShopApi;
-using CarShopApi.Endpoints;
+using CarShopApi.Config;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+DependencyInjector.Inject(builder.Services, builder.Configuration);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 
+
+app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     try
     {
         context.Database.EnsureCreated();
+        context.Database.Migrate();
         
     }
     catch (Exception ex)
@@ -44,6 +44,5 @@ app.MapGet("/", context =>
 });
 
 
-CarEndpoints.Map(app);
 
 app.Run();

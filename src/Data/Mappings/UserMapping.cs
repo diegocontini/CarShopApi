@@ -1,14 +1,15 @@
+using CarShopApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarShopApi.Data.Mappings;
 
-public class CarMapping : IEntityTypeConfiguration<Car>
+public class UserMapping : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<Car> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
 
-        builder.ToTable("cars");
+        builder.ToTable("users");
         builder.HasKey(c => c.Id);
     }
 }
