@@ -28,7 +28,11 @@ COPY --from=publish /app/publish .
 RUN chown -R dotnetuser:dotnetuser /app
 USER dotnetuser
 
-# Expose port
-EXPOSE 8080
+# Set environment variables
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:8000
+
+# Expose port 8000 for Koyeb health checks
+EXPOSE 8000
 
 ENTRYPOINT ["dotnet", "CarShopApi.dll"]

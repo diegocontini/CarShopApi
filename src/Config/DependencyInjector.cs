@@ -8,8 +8,27 @@ public class DependencyInjector
 {
     public static void Inject(IServiceCollection services, IConfiguration configuration)
     {
+        // Build connection string from environment variables if in production
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            // Build connection string from individual environment variables for production
+            var host = Environment.GetEnvironmentVariable("DB_HOST");
+            var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+            var database = Environment.GetEnvironmentVariable("DB_NAME");
+            var username = Environment.GetEnvironmentVariable("DB_USER");
+            var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+            
+            if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(database) && 
+                !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+            }
+        }
+
         services.AddDbContext<AppDbContext>(options =>  
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+            options.UseNpgsql(connectionString)
         );
 
         services.AddControllers().AddJsonOptions(opt =>
