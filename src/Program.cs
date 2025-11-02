@@ -17,8 +17,6 @@ DependencyInjector.Inject(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 app.MapControllers();
-
-// Add health check endpoint for Koyeb
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
 
 using (var scope = app.Services.CreateScope())
@@ -33,30 +31,20 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Console.WriteLine($"Error initializing database: {ex.Message}");
-        // Don't exit the application, let it continue running
-        // The health check will still work even if DB initialization fails
     }
 }
 
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-// Remove HTTPS redirection for containerized deployment
-// app.UseHttpsRedirection();
+// }
 
 app.MapGet("/", context =>
 {
-    if (app.Environment.IsDevelopment())
-    {
+    
         context.Response.Redirect("/swagger");
-    }
-    else
-    {
-        context.Response.Redirect("/health");
-    }
+        
     return Task.CompletedTask;
 });
 
