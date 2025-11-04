@@ -14,7 +14,7 @@ public class OrderItemMapping : IEntityTypeConfiguration<OrderItem>
         
         builder.HasOne(ci => ci.Order)
             .WithMany(c => c.Items)
-            .HasForeignKey(ci => ci.CarId);
+            .HasForeignKey(ci => ci.OrderId);
     }
     
 }

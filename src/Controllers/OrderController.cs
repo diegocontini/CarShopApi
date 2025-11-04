@@ -1,10 +1,11 @@
+using CarShopApi.Controllers.Dtos;
 using CarShopApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShopApi.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
-public class OrderController (OrderService service) : Controller
+public class OrderController (OrderService service) : ControllerBase
 {
     private readonly OrderService _service = service;
 
@@ -15,12 +16,13 @@ public class OrderController (OrderService service) : Controller
         return Ok(orders);
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] Models.Order order)
+    [HttpPut]
+    [ProducesResponseType(typeof(Models.Order), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateOrUpdate([FromBody] CreateOrUpdateOrderDto orderDto)
     {
-        var createdOrder = await _service.Create(order);
-        return Ok(createdOrder);
+        return Ok(await _service.CreateOrUpdateAsync(orderDto));
     }
-    
+
+   
 
 }

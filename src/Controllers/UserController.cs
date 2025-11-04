@@ -13,7 +13,7 @@ public class UserController(UserService userService) : Controller
 {
     private readonly UserService _userService = userService;
 
-    [HttpPut("create-or-update")]
+    [HttpPut]
     [ProducesResponseType<User>((int)HttpStatusCode.OK)]
     public async Task<IActionResult> CreateOrUpdate([FromBody] User user)
     {
@@ -46,3 +46,4 @@ public class UserController(UserService userService) : Controller
         return Ok(resp);
     }
 }
+

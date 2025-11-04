@@ -8,12 +8,9 @@ public class DependencyInjector
 {
     public static void Inject(IServiceCollection services, IConfiguration configuration)
     {
-        // Build connection string from environment variables if in production
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-        
         if (string.IsNullOrEmpty(connectionString))
         {
-            // Build connection string from individual environment variables for production
             var host = Environment.GetEnvironmentVariable("DB_HOST");
             var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
             var database = Environment.GetEnvironmentVariable("DB_NAME");
@@ -34,6 +31,7 @@ public class DependencyInjector
         services.AddControllers().AddJsonOptions(opt =>
         {
             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
         });
         services.AddSwaggerGen();
         services.AddRouting(opt =>

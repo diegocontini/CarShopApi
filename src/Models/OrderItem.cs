@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CarShopApi.Models;
 
 public class OrderItem
@@ -7,6 +9,5 @@ public class OrderItem
     public long CarId { get; set; }
     public decimal Price { get; set; }
     public decimal Discount { get; set; }
-    
     public Order Order { get; set; }
 }

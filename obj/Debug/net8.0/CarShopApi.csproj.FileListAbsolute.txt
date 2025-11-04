@@ -402,3 +402,4 @@
 /Users/diego/dev/projects/utfpr/CarShopApi/obj/Debug/net8.0/CarShopApi.pdb
 /Users/diego/dev/projects/utfpr/CarShopApi/obj/Debug/net8.0/CarShopApi.genruntimeconfig.cache
 /Users/diego/dev/projects/utfpr/CarShopApi/obj/Debug/net8.0/ref/CarShopApi.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/appsettings.json

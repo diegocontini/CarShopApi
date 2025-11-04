@@ -1,4 +1,5 @@
 using CarShopApi.Services;
+using CarShopApi.Controllers.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,21 +11,21 @@ public class CarController(CarService service) : ControllerBase
 {
     private readonly CarService _service = service;
 
-    [HttpGet("list")]
+    [HttpGet()]
     [ProducesResponseType( typeof(IEnumerable<Car>) ,StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
         return Ok(await _service.GetAllAsync());
     }
 
-    [HttpPut("create-or-update")]
+    [HttpPut()]
     [ProducesResponseType( typeof(Car) ,StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateOrUpdate([FromBody] Car car)
+    public async Task<IActionResult> CreateOrUpdate([FromBody] CreateOrUpdateCarDto carDto)
     {
-        return Ok(await _service.CreateOrUpdateAsync(car));
+        return Ok(await _service.CreateOrUpdateAsync(carDto));
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteAsync(id);
