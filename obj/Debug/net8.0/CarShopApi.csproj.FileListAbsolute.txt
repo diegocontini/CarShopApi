@@ -403,3 +403,11 @@
 /Users/diego/dev/projects/utfpr/CarShopApi/obj/Debug/net8.0/CarShopApi.genruntimeconfig.cache
 /Users/diego/dev/projects/utfpr/CarShopApi/obj/Debug/net8.0/ref/CarShopApi.dll
 /Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/appsettings.json
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/Users/diego/dev/projects/utfpr/CarShopApi/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll

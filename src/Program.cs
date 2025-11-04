@@ -16,6 +16,9 @@ DependencyInjector.Inject(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
 
@@ -34,11 +37,9 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// if (app.Environment.IsDevelopment())
-// {
     app.UseSwagger();
     app.UseSwaggerUI();
-// }
+
 
 app.MapGet("/", context =>
 {

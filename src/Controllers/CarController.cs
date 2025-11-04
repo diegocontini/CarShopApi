@@ -2,11 +2,13 @@ using CarShopApi.Services;
 using CarShopApi.Controllers.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarShopApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[Authorize]
 public class CarController(CarService service) : ControllerBase
 {
     private readonly CarService _service = service;
