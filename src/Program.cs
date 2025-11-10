@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using CarShopApi;
 using CarShopApi.Config;
+using CarShopApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,11 +26,35 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = Dat
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     try
     {
-        context.Database.EnsureCreated();
-        context.Database.Migrate();
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+      
+
         
+        var hasAdmin = context.Users.Any(u => u.Username == "admin");
+        if (!hasAdmin)
+        {
+            var adminUsername = configuration["SuperUser:Username"] ?? "admin";
+            var adminPassword = configuration["SuperUser:Password"] ?? "admin";
+            var adminEmail = configuration["SuperUser:Email"] ?? "admin@localhost";
+
+            var superUser = new User
+            {
+                Username = adminUsername,
+                Password = adminPassword,
+                Email = adminEmail,
+                Role = UserRole.Admin
+            };
+
+            context.Users.Add(superUser);
+            context.SaveChanges();
+            Console.WriteLine($"Super user created: {adminUsername}");
+        }
     }
     catch (Exception ex)
     {

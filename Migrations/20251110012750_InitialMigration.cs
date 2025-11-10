@@ -54,10 +54,10 @@ namespace CarShopApi.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComissionPerSaleInPercent = table.Column<byte>(type: "smallint", nullable: true),
                     Username = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
+                    ComissionPerSaleInPercent = table.Column<byte>(type: "smallint", nullable: true),
                     Role = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -90,7 +90,7 @@ namespace CarShopApi.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Url = table.Column<string>(type: "text", nullable: false),
-                    CarId = table.Column<long>(type: "bigint", nullable: false)
+                    CarId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,8 +99,7 @@ namespace CarShopApi.Migrations
                         name: "FK_car_images_cars_CarId",
                         column: x => x.CarId,
                         principalTable: "cars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -118,8 +117,8 @@ namespace CarShopApi.Migrations
                 {
                     table.PrimaryKey("PK_order_items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_items_orders_CarId",
-                        column: x => x.CarId,
+                        name: "FK_order_items_orders_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -131,9 +130,9 @@ namespace CarShopApi.Migrations
                 column: "CarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_items_CarId",
+                name: "IX_order_items_OrderId",
                 table: "order_items",
-                column: "CarId");
+                column: "OrderId");
         }
 
         /// <inheritdoc />

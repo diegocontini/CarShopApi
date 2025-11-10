@@ -1,39 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
-using CarShopApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using CarShopApi.Controllers.Dtos;
+using CarShopApi.Services;
 
 namespace CarShopApi.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Admin,Vendor")]
 [Route("api/v1/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly JwtService _jwtService;
-    
-    private readonly List<string> _mockedValidApiKeys =
-    [
-        "123e4567-e89b-12d3-a456-426614174000"
-    ];
+    private readonly UserService _userService;
 
-    public AuthController(JwtService jwtService)
+    public AuthController(JwtService jwtService, UserService userService)
     {
         _jwtService = jwtService;
+        _userService = userService;
     }
 
+    [AllowAnonymous]
     [HttpPost("token")]
-    public IActionResult CreateToken([FromBody] TokenRequestDto request)
+    public async Task<IActionResult> CreateToken([FromBody] LoginDto request)
     {
-        if (string.IsNullOrWhiteSpace(request.ApiKey))
+        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
         {
-            return BadRequest(new { message = "ApplicationId is required" });
+            return BadRequest(new { message = "Username and password are required" });
         }
 
-        if (!_mockedValidApiKeys.Contains(request.ApiKey))
+        var user = await _userService.AuthenticateLogin(request);
+        if (user == null)
         {
-            return BadRequest(new { message = "Invalid API key" });
+            return Unauthorized(new { message = "Invalid username or password" });
         }
 
-        var token = _jwtService.GenerateToken(request.ApiKey);
+        var token = _jwtService.GenerateToken(user.Username, user.Role.ToString());
         var expiresAt = _jwtService.GetTokenExpiration();
 
         var response = new TokenResponseDto

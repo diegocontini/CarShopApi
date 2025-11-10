@@ -14,7 +14,7 @@ public class JwtService
         _configuration = configuration;
     }
 
-    public string GenerateToken(string applicationId)
+    public string GenerateToken(string subject, string role)
     {
         var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");
         var issuer = _configuration["Jwt:Issuer"];
@@ -24,11 +24,13 @@ public class JwtService
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, applicationId),
+            new Claim(JwtRegisteredClaimNames.Sub, subject),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("applicationId", applicationId)
+            new Claim(ClaimTypes.NameIdentifier, subject),
+            new Claim(ClaimTypes.Role, role),
+            new Claim("role", role)
         };
 
         var token = new JwtSecurityToken(
@@ -48,4 +50,3 @@ public class JwtService
         return DateTime.UtcNow.AddMinutes(expiryInMinutes);
     }
 }
-

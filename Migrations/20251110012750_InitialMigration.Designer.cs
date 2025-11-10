@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarShopApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251102191531_InitialMigration")]
+    [Migration("20251110012750_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -74,7 +74,7 @@ namespace CarShopApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CarId")
+                    b.Property<long?>("CarId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Url")
@@ -136,7 +136,7 @@ namespace CarShopApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CarId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("order_items", (string)null);
                 });
@@ -208,9 +208,7 @@ namespace CarShopApi.Migrations
                 {
                     b.HasOne("Car", "Car")
                         .WithMany("Images")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CarId");
 
                     b.Navigation("Car");
                 });
@@ -219,7 +217,7 @@ namespace CarShopApi.Migrations
                 {
                     b.HasOne("CarShopApi.Models.Order", "Order")
                         .WithMany("Items")
-                        .HasForeignKey("CarId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

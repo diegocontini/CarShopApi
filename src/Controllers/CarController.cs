@@ -8,12 +8,13 @@ namespace CarShopApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
+
 public class CarController(CarService service) : ControllerBase
 {
     private readonly CarService _service = service;
 
     [HttpGet()]
+    [Authorize(Roles = "Admin,Vendor")] 
     [ProducesResponseType( typeof(IEnumerable<Car>) ,StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
@@ -21,6 +22,7 @@ public class CarController(CarService service) : ControllerBase
     }
 
     [HttpPut()]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType( typeof(Car) ,StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateOrUpdate([FromBody] CreateOrUpdateCarDto carDto)
     {
@@ -28,6 +30,7 @@ public class CarController(CarService service) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteAsync(id);
