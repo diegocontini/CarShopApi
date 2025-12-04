@@ -48,6 +48,7 @@ using (var scope = app.Services.CreateScope())
                 Username = adminUsername,
                 Password = adminPassword,
                 Email = adminEmail,
+                ComissionPerSaleInPercent = 3,
                 Role = UserRole.Admin
             };
 

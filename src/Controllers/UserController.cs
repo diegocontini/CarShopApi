@@ -15,25 +15,72 @@ public class UserController(UserService userService) : Controller
 {
     private readonly UserService _userService = userService;
 
-    [HttpPut]
-    [ProducesResponseType<User>((int)HttpStatusCode.OK)]
-    public async Task<IActionResult> CreateOrUpdate([FromBody] User user)
+    [HttpGet]
+    [ProducesResponseType<IEnumerable<User>>((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetAll()
     {
-        var resp = await _userService.CreateOrUpdateAsync(user);
-
-        return Ok(resp);
+        var users = await _userService.Get();
+        return Ok(users);
     }
-    
-    [HttpGet("{id}")]
 
-    public async Task<IActionResult> GetUser([FromRoute] int id)
+    [HttpGet("{id}")]
+    [ProducesResponseType<User>((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetById(long id)
     {
-        var resp= await _userService.GetAsync(id);
-        if (resp == null)
+        var user = await _userService.GetAsync(id);
+        
+        if (user == null)
         {
-            return NoContent();
+            return NotFound();
         }
-        return Ok(resp);
+        
+        return Ok(user);
+    }
+
+    [HttpPost]
+    [ProducesResponseType<User>((int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> Create([FromBody] User user)
+    {
+        try
+        {
+            var createdUser = await _userService.CreateAsync(user);
+            return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType<User>((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Update(long id, [FromBody] User user)
+    {
+        var updatedUser = await _userService.UpdateAsync(id, user);
+        
+        if (updatedUser == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(updatedUser);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var deleted = await _userService.DeleteAsync(id);
+        
+        if (!deleted)
+        {
+            return NotFound();
+        }
+        
+        return NoContent();
     }
 }
-
