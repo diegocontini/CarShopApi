@@ -9,45 +9,31 @@ public class OrderService(AppDbContext db)
 {
     private readonly AppDbContext _db = db;
 
-    public async Task<List<Order>> GetOrders(int vendorId)
+    public async Task<List<Order>> GetOrders(int? vendorId)
     {
-        return await _db.Orders.Include(e=>e.Items)
+        if (vendorId == null)
+        {
+            return await _db.Orders.Include(e => e.Items).ToListAsync();
+        }
+
+        return await _db.Orders.Include(e => e.Items)
             .Where(o => o.VendorId == vendorId)
             .ToListAsync();
     }
 
-    public async Task<Order?> CreateOrUpdateAsync(CreateOrUpdateOrderDto orderDto)
+    public async Task<Order?> GetByIdAsync(long id)
+    {
+        return await _db.Orders
+            .Include(e => e.Items)
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<Order> CreateAsync(CreateOrUpdateOrderDto orderDto)
     {
         var transact = await _db.Database.BeginTransactionAsync();
         try
         {
-            Order order;
-            
-            
-            if (orderDto.Id.HasValue)
-            {
-                var existingOrder = await _db.Orders
-                    .Include(o => o.Items)
-                    .FirstOrDefaultAsync(e => e.Id == orderDto.Id);
-                
-                if (existingOrder != null)
-                {
-                    // Map DTO properties to existing order
-                    existingOrder.CustomerName = orderDto.CustomerName;
-                    existingOrder.OrderDate = orderDto.OrderDate;
-                    existingOrder.Total = orderDto.Total;
-                    existingOrder.VendorId = orderDto.VendorId;
-                    
-                    await _db.SaveChangesAsync();
-                    await ProcessOrderItems(existingOrder, orderDto.Items);
-                    await ProcessComission(existingOrder);
-                    await transact.CommitAsync();
-                    return existingOrder;
-                }
-            }
-            
-            
-            order = new Order
+            var order = new Order
             {
                 CustomerName = orderDto.CustomerName,
                 OrderDate = orderDto.OrderDate,
@@ -70,26 +56,72 @@ public class OrderService(AppDbContext db)
         }
     }
 
+    public async Task<Order?> UpdateAsync(long id, CreateOrUpdateOrderDto orderDto)
+    {
+        var transact = await _db.Database.BeginTransactionAsync();
+        try
+        {
+            var existingOrder = await _db.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existingOrder == null)
+            {
+                await transact.RollbackAsync();
+                return null;
+            }
+
+            existingOrder.CustomerName = orderDto.CustomerName;
+            existingOrder.OrderDate = orderDto.OrderDate;
+            existingOrder.Total = orderDto.Total;
+            existingOrder.VendorId = orderDto.VendorId;
+
+            await _db.SaveChangesAsync();
+            await ProcessOrderItems(existingOrder, orderDto.Items);
+            await ProcessComission(existingOrder);
+            await transact.CommitAsync();
+            return existingOrder;
+        }
+        catch
+        {
+            await transact.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        var order = await GetByIdAsync(id);
+        if (order == null)
+        {
+            return false;
+        }
+
+        _db.Orders.Remove(order);
+        _db.VendorComissions.RemoveRange(_db.VendorComissions.Where(c => c.OrderId == id));
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
     private async Task ProcessOrderItems(Order order, IList<CreateOrUpdateOrderItemDto> itemDtos)
     {
         foreach (var itemDto in itemDtos)
         {
-            
             if (itemDto.Id.HasValue)
             {
                 var existingItem = await _db.OrderItems
                     .FirstOrDefaultAsync(i => i.Id == itemDto.Id && i.OrderId == order.Id);
-                
+
                 if (existingItem != null)
                 {
                     existingItem.CarId = itemDto.CarId;
                     existingItem.Price = itemDto.Price;
                     existingItem.Discount = itemDto.Discount;
+                    await _db.SaveChangesAsync();
                     continue;
                 }
             }
-            
-      
+
             var newItem = new OrderItem
             {
                 CarId = itemDto.CarId,
@@ -97,7 +129,7 @@ public class OrderService(AppDbContext db)
                 Discount = itemDto.Discount,
                 OrderId = order.Id ?? 0
             };
-            
+
             await _db.OrderItems.AddAsync(newItem);
             await _db.SaveChangesAsync();
         }
@@ -113,7 +145,7 @@ public class OrderService(AppDbContext db)
             var percent = (decimal)vendor.ComissionPerSaleInPercent / 100;
             comissionAmount = percent * order.Total;
         }
-        
+
         var comission = new VendorComission
         {
             Id = null,
