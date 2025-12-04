@@ -15,43 +15,17 @@ public class CarService(AppDbContext db)
 
     public async Task<Car?> GetByIdAsync(long id)
     {
-        return await _db.Cars.Where(e => e.Id == id).FirstOrDefaultAsync();
+        return await _db.Cars
+            .Include(e => e.Images)
+            .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<Car?> CreateOrUpdateAsync(CreateOrUpdateCarDto carDto)
+    public async Task<Car> CreateAsync(CreateOrUpdateCarDto carDto)
     {
         var transact = await _db.Database.BeginTransactionAsync();
         try
         {
-            Car car;
-
-
-            if (carDto.Id.HasValue)
-            {
-                var existingCar = await _db.Cars
-                    .Include(c => c.Images)
-                    .FirstOrDefaultAsync(e => e.Id == carDto.Id);
-
-                if (existingCar != null)
-                {
-                    existingCar.New = carDto.New;
-                    existingCar.Brand = carDto.Brand;
-                    existingCar.Model = carDto.Model;
-                    existingCar.Year = carDto.Year;
-                    existingCar.Price = carDto.Price;
-                    existingCar.Color = carDto.Color;
-                    existingCar.Km = carDto.Km;
-                    existingCar.Description = carDto.Description;
-
-                    await _db.SaveChangesAsync();
-                    await ProcessImages(existingCar, carDto.Images);
-                    await transact.CommitAsync();
-                    return existingCar;
-                }
-            }
-
-
-            car = new Car
+            var car = new Car
             {
                 New = carDto.New,
                 Brand = carDto.Brand,
@@ -77,6 +51,42 @@ public class CarService(AppDbContext db)
         }
     }
 
+    public async Task<Car?> UpdateAsync(long id, CreateOrUpdateCarDto carDto)
+    {
+        var transact = await _db.Database.BeginTransactionAsync();
+        try
+        {
+            var existingCar = await _db.Cars
+                .Include(c => c.Images)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existingCar == null)
+            {
+                await transact.RollbackAsync();
+                return null;
+            }
+
+            existingCar.New = carDto.New;
+            existingCar.Brand = carDto.Brand;
+            existingCar.Model = carDto.Model;
+            existingCar.Year = carDto.Year;
+            existingCar.Price = carDto.Price;
+            existingCar.Color = carDto.Color;
+            existingCar.Km = carDto.Km;
+            existingCar.Description = carDto.Description;
+
+            await _db.SaveChangesAsync();
+            await ProcessImages(existingCar, carDto.Images);
+            await transact.CommitAsync();
+            return existingCar;
+        }
+        catch
+        {
+            await transact.RollbackAsync();
+            throw;
+        }
+    }
+
     private async Task ProcessImages(Car car, IList<CreateOrUpdateCarImageDto> imageDtos)
     {
         foreach (var imageDto in imageDtos)
@@ -94,7 +104,6 @@ public class CarService(AppDbContext db)
                 }
             }
 
-
             var newImage = new CarImage
             {
                 Url = imageDto.Url,
@@ -106,7 +115,7 @@ public class CarService(AppDbContext db)
         }
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(long id)
     {
         var car = await GetByIdAsync(id);
         if (car == null)
